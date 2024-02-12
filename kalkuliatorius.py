@@ -24,7 +24,7 @@ while True:
     # Irasas is vartotojo
     pasirinkimas = input("Pasirinkimas (1/2/3/4): ")
 
-    # Patikrinimas ar tai yra vienas is pasirinkimu
+    # Patikrinimas, ar tai yra vienas is pasirinkimu
     if pasirinkimas in ('1', '2', '3', '4'):
         try:
             pirmas = int(intput("Pirmas numeris:"))
@@ -32,4 +32,13 @@ while True:
         except ValueError:
             print("Netinkamas. Prasom irasyti numeri")
             continue
+
+        if pasirinkimas == '1':
+            print(pirmas, "+", antras, "=", sudetis(pirmas, antras))
+        elif pasirinkimas == '2':
+            print(pirmas, "-", antras, "=", atimtis(pirmas, antras))
+        elif pasirinkimas == '3':
+            print(pirmas, "*", antras, "=", daugyba(pirmas, antras))
+        elif pasirinkimas == '4':
+            print(pirmas, "/", antras, "=", dalyba(pirmas, antras))
 
