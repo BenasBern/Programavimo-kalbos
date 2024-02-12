@@ -30,8 +30,8 @@ while True:
     # Patikrinimas, ar tai yra vienas is pasirinkimu
     if pasirinkimas in ('1', '2', '3', '4'):
         try:
-            pirmas = float(intput("Pirmas numeris:"))
-            antras = float(intput("Antras numeris:"))
+            pirmas = float(input("Pirmas numeris: "))
+            antras = float(input("Antras numeris: "))
         except ValueError:
             print("Netinkamas. Prasom irasyti numeri")
             continue
