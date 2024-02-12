@@ -7,5 +7,3 @@ def funkcija():
     print(kintamasis2)
     print(f'test:{kintamasis2}{kintamasis}')
     print('test: {}{}'.format(kintamasis2, kintamasis))
-    
-      print('test: {}{}'.format(kintamasis2, kintamasis))
