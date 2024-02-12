@@ -12,7 +12,10 @@ def daugyba(x, y):
 
 # Funkcija padalina
 def dalyba(x, y):
-    return x / y
+    if (y=0):
+        return
+    else:
+        return x / y
 
 print("Pasirinkimai: ")
 print("Sudetis: ")
@@ -42,3 +45,10 @@ while True:
         elif pasirinkimas == '4':
             print(pirmas, "/", antras, "=", dalyba(pirmas, antras))
 
+        # Paklausti ar vartotojas nori kito veiksmo
+        # Sustabdyti programa, jei atsakymas - ne
+        kitasskaiciavimas = input("Ar atlikti kita skaiciavima? (taip/ne): ")
+        if kitasskaiciavimas == "ne":
+          break
+    else:
+        print("Netinkama ivestis")
