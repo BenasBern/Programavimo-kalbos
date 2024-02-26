@@ -4,57 +4,65 @@ app = Flask(__name__)
 
 skaicius = 0 #apsirasom kintamaji (Globalus)
 
+def sudetis(x,y):
+        return x+y
+
 @app.route("/") # Route 1
 def hello_world():
 
-    return f"<h1>Hello, World! </h1> {skaicius}"
+    return f"""
+                <form action="/skaicius">
+                    <label for="test">skaicius 1</label><br>
+                        <input type="text" id="test" name="test" value=""><br>
+                        </br></br>
+
+                    <label for="test2">skaicius 2</label><br>
+                        <input type="text" id="test2" name="test2" value=""><br><br>
+                        </br></br>
+                        
+                    <label for="[[__ID__]]">skaicius 2</label><br>   
+                        <input type="text" id="[[__ID__]]" name="[[__ID__]]" value="0"><br><br>
+                        </br></br>
+
+                    <input type="submit" value="Submit">
+                </form> 
+            """
 
 
-@app.route("/labas") # Route 2
+'''@app.route("/labas") # Route 2
 def sakyk_labas():
     global skaicius #Naudoju globalu kintamaji
     skaicius = skaicius +1 #kaskart atidare pridedam 1
-    return f"Labas {skaicius}"
+    return f"Labas {skaicius}"'''
 
-@app.route("/skaicius") #Route 3
+@app.route("/skaicius") # Route 3
 def skaiciavimo():
-    #Uzklausa. Argumentai. Metodas() 
-    skaicius = request.args.get("test") #Pasiimam argumenta is URL pvz.: /skaicius?test=100
+    #UZKLAUSA. ARGUMENTAI. METODAS()
+    skaicius = request.args.get("test") ### Pasiimam argumenta is URL pvz.: /skaicius?test=100
+    skaicius2 = request.args.get("test2") ### Pasiimam argumenta 2 is URL pvz.: /skaicius?test2=100
 
-    return f"Tavo ivestas skaicius: {skaicius}"
+    suma = sudetis(int(skaicius2),int(skaicius))
 
-
+    return f"Tavo ivestas skaicius: {suma}"
 
 
 if __name__ == "__main__":
     app.run()
-
-
-
-
-
-
-
-
-
 
 # 1. Susiediegiame Flask
     # pip3 install Flask
 
 # 2. Importuojame
 
+'''<form>
+  <label for="test">Pirmas skaičius:</label><br>
+  <input type="text" id="test" name="fname"><br>
+  <label for="test2">Antras skaičius:</label><br>
+  <input type="text" id="test2" name="lname">
+</form>'''
 
 
-
-
-
-
-
-
-
-
-'''
-# Funkcija sudeda
+'''# Funkcija sudeda
 def sudetis(x, y):
     return x + y
 
@@ -107,5 +115,4 @@ while True:
         if kitasskaiciavimas == "ne":
           break
     else:
-        print("Netinkama ivestis")
-        '''
+        print("Netinkama ivestis")'''
