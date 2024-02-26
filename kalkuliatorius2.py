@@ -2,6 +2,8 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
+operations_history = []
+
 def sudetis(x, y):
     return x + y
 
@@ -19,6 +21,12 @@ def dalyba(x, y):
 
 @app.route("/")  # Route 1
 def hello_world():
+ 
+    history_html = "<ul>"
+    for operation in operations_history:
+        history_html += f"<li>{operation}</li>"
+    history_html += "</ul>"
+
     return f"""
                 <form action="/skaicius">
                     <label for="test">Skaičius 1</label><br>
@@ -35,15 +43,17 @@ def hello_world():
 
                     <input type="submit" value="Pateikti">
                 </form> 
+                <h2>Praeitos operacijos</h2>
+                {history_html}
             """
 
-@app.route("/skaicius")  # Route 3
+@app.route("/skaicius")  # Route 2
 def skaiciavimo():
-    skaicius1 = request.args.get("test", type=int)  # Retrieve and convert to integer
-    skaicius2 = request.args.get("test2", type=int)  # Retrieve and convert to integer
-    zenklas = request.args.get("zenklas")  # Retrieve the symbol
+    skaicius1 = request.args.get("test", type=int)  # Gauti ir pakeisti i int
+    skaicius2 = request.args.get("test2", type=int)  # Gauti ir pakeisti i int
+    zenklas = request.args.get("zenklas")  # Gauti simboli
 
-    # Perform operation based on the symbol
+    # Atlikti operacija, pagal tan tikra simboli
     if zenklas == '+':
         rezultatas = sudetis(skaicius1, skaicius2)
     elif zenklas == '-':
@@ -54,7 +64,12 @@ def skaiciavimo():
         rezultatas = dalyba(skaicius1, skaicius2)
     else:
         rezultatas = "Nepalaikomas veiksmas"
-    return f"Atliktos operacijos rezultatas: {rezultatas}"
+    f"Atliktos operacijos rezultatas: {rezultatas}"
+        
+    # Isaugo operacijas i atminti, kad galetu jas pateikti
+    operations_history.append(f"{skaicius1} {zenklas} {skaicius2} = {rezultatas}")
+    
+    #return hello_world()  # Perkelti atgal i pagrindini puslapi, kad rodytu rezultata ir senus veiksmus
 
 if __name__ == "__main__":
     app.run(debug=True)
