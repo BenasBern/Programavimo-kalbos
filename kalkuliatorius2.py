@@ -1,17 +1,12 @@
 from flask import Flask, request
-import string
+
 app = Flask(__name__)
 
+def sudetis(x, y):
+    return x + y
 
-skaicius = 0 #apsirasom kintamaji (Globalus)
-zenklas = '+'
-
-def sudetis(x,y):
-        return x+y
-
-@app.route("/") # Route 1
+@app.route("/")  # Route 1
 def hello_world():
-
     return f"""
                 <form action="/skaicius">
                     <label for="test">Skaičius 1</label><br>
@@ -30,27 +25,23 @@ def hello_world():
                 </form> 
             """
 
-
-'''@app.route("/labas") # Route 2
-def sakyk_labas():
-    global skaicius #Naudoju globalu kintamaji
-    skaicius = skaicius +1 #kaskart atidare pridedam 1
-    return f"Labas {skaicius}"'''
-
-@app.route("/skaicius") # Route 3
+@app.route("/skaicius")  # Route 3
 def skaiciavimo():
-    #UZKLAUSA. ARGUMENTAI. METODAS()
-    skaicius = request.args.get("test") ### Pasiimam argumenta is URL pvz.: /skaicius?test=100
-    skaicius2 = request.args.get("test2") ### Pasiimam argumenta 2 is URL pvz.: /skaicius?test2=100
-    #zenklas = request.args.get("zenklas") ### Pasiimam zenkla is URL
+    skaicius1 = request.args.get("test", type=int)  # Retrieve and convert to integer
+    skaicius2 = request.args.get("test2", type=int)  # Retrieve and convert to integer
+    zenklas = request.args.get("zenklas")  # Retrieve the symbol
 
-    suma = sudetis(int(skaicius2),int(skaicius),string(zenklas))
+    # Perform operation based on the symbol
+    if zenklas == '+':
+        rezultatas = sudetis(skaicius1, skaicius2)
+    else:
+        # You can expand this section to handle other operations
+        rezultatas = "Nepalaikomas veiksmas"
 
-    return f"Tavo įvestas skaičius: {suma}"
-
+    return f"Operacijos rezultatas: {rezultatas}"
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
 
 # 1. Susiediegiame Flask
     # pip3 install Flask
