@@ -21,7 +21,7 @@ def dalyba(x, y):
 
 @app.route("/")  # Route 1
 def hello_world():
- 
+    latest_result=""
     history_html = "<ul>"
     for operation in operations_history:
         history_html += f"<li>{operation}</li>"
@@ -42,7 +42,7 @@ def hello_world():
                         </br></br>
 
                     <input type="submit" value="Pateikti">
-                </form> 
+                </form>
                 <h2>Praeitos operacijos</h2>
                 {history_html}
             """
@@ -64,12 +64,14 @@ def skaiciavimo():
         rezultatas = dalyba(skaicius1, skaicius2)
     else:
         rezultatas = "Nepalaikomas veiksmas"
-    f"Atliktos operacijos rezultatas: {rezultatas}"
         
     # Isaugo operacijas i atminti, kad galetu jas pateikti
     operations_history.append(f"{skaicius1} {zenklas} {skaicius2} = {rezultatas}")
     
-    return hello_world()  # Perkelti atgal i pagrindini puslapi, kad rodytu rezultata ir senus veiksmus
+    # Iskviesti hello_world, kad rodyti paskutini veiksma pati pirma
+    return hello_world(latest_result=f"{skaicius1} {zenklas} {skaicius2} = {rezultatas}")
+    return hello_world(f"{skaicius1} {zenklas} {skaicius2} = {rezultatas}")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
