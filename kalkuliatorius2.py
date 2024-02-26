@@ -1,8 +1,10 @@
 from flask import Flask, request
+import string
 app = Flask(__name__)
 
 
 skaicius = 0 #apsirasom kintamaji (Globalus)
+zenklas = '+'
 
 def sudetis(x,y):
         return x+y
@@ -12,19 +14,19 @@ def hello_world():
 
     return f"""
                 <form action="/skaicius">
-                    <label for="test">skaicius 1</label><br>
+                    <label for="test">Skaičius 1</label><br>
                         <input type="text" id="test" name="test" value=""><br>
                         </br></br>
 
-                    <label for="test2">skaicius 2</label><br>
-                        <input type="text" id="test2" name="test2" value=""><br><br>
+                    <label for="test2">Skaičius 2</label><br>
+                        <input type="text" id="test2" name="test2" value=""><br>
                         </br></br>
                         
-                    <label for="[[__ID__]]">skaicius 2</label><br>   
-                        <input type="text" id="[[__ID__]]" name="[[__ID__]]" value="0"><br><br>
+                    <label for="zenklas">Ženklas</label><br>   
+                        <input type="text" id="zenklas" name="zenklas" value=""><br>
                         </br></br>
 
-                    <input type="submit" value="Submit">
+                    <input type="submit" value="Pateikti">
                 </form> 
             """
 
@@ -40,10 +42,11 @@ def skaiciavimo():
     #UZKLAUSA. ARGUMENTAI. METODAS()
     skaicius = request.args.get("test") ### Pasiimam argumenta is URL pvz.: /skaicius?test=100
     skaicius2 = request.args.get("test2") ### Pasiimam argumenta 2 is URL pvz.: /skaicius?test2=100
+    #zenklas = request.args.get("zenklas") ### Pasiimam zenkla is URL
 
-    suma = sudetis(int(skaicius2),int(skaicius))
+    suma = sudetis(int(skaicius2),int(skaicius),string(zenklas))
 
-    return f"Tavo ivestas skaicius: {suma}"
+    return f"Tavo įvestas skaičius: {suma}"
 
 
 if __name__ == "__main__":
