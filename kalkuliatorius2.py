@@ -5,6 +5,18 @@ app = Flask(__name__)
 def sudetis(x, y):
     return x + y
 
+def atimtis(x, y):
+    return x - y
+
+def daugyba(x, y):
+    return x * y
+
+def dalyba(x, y):
+    if (y==0):
+        return
+    else:
+        return x / y
+
 @app.route("/")  # Route 1
 def hello_world():
     return f"""
@@ -34,8 +46,13 @@ def skaiciavimo():
     # Perform operation based on the symbol
     if zenklas == '+':
         rezultatas = sudetis(skaicius1, skaicius2)
+    elif zenklas == '-':
+        rezultatas = atimtis(skaicius1, skaicius2)
+    elif zenklas == '*':
+        rezultatas = daugyba(skaicius1, skaicius2)
+    elif zenklas == '/':
+        rezultatas = dalyba(skaicius1, skaicius2)
     else:
-        # You can expand this section to handle other operations
         rezultatas = "Nepalaikomas veiksmas"
 
     return f"Operacijos rezultatas: {rezultatas}"
