@@ -69,7 +69,7 @@ def skaiciavimo():
     # Isaugo operacijas i atminti, kad galetu jas pateikti
     operations_history.append(f"{skaicius1} {zenklas} {skaicius2} = {rezultatas}")
     
-    #return hello_world()  # Perkelti atgal i pagrindini puslapi, kad rodytu rezultata ir senus veiksmus
+    return hello_world()  # Perkelti atgal i pagrindini puslapi, kad rodytu rezultata ir senus veiksmus
 
 if __name__ == "__main__":
     app.run(debug=True)
