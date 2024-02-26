@@ -20,12 +20,14 @@ def dalyba(x, y):
         return x / y
 
 @app.route("/")  # Route 1
-def hello_world():
-    latest_result=""
+def hello_world(latest_result=None):
     history_html = "<ul>"
     for operation in operations_history:
         history_html += f"<li>{operation}</li>"
     history_html += "</ul>"
+
+    # Rodyti paskutine operacija, jei ji egzistuoja
+    latest_result_html = f"{latest_result}" if latest_result else ""
 
     return f"""
                 <form action="/skaicius">
@@ -43,12 +45,16 @@ def hello_world():
 
                     <input type="submit" value="Pateikti">
                 </form>
+                <h2>Rezultatas</h2>
+                {latest_result_html}
                 <h2>Praeitos operacijos</h2>
                 {history_html}
             """
 
 @app.route("/skaicius")  # Route 2
 def skaiciavimo():
+    if not request.args.get("test") or not request.args.get("test2"):
+        return "Nera argumento"
     skaicius1 = request.args.get("test", type=int)  # Gauti ir pakeisti i int
     skaicius2 = request.args.get("test2", type=int)  # Gauti ir pakeisti i int
     zenklas = request.args.get("zenklas")  # Gauti simboli
@@ -64,14 +70,13 @@ def skaiciavimo():
         rezultatas = dalyba(skaicius1, skaicius2)
     else:
         rezultatas = "Nepalaikomas veiksmas"
+    #return hello_world(f"Atliktos operacijos rezultatas: {rezultatas}")
         
     # Isaugo operacijas i atminti, kad galetu jas pateikti
     operations_history.append(f"{skaicius1} {zenklas} {skaicius2} = {rezultatas}")
     
     # Iskviesti hello_world, kad rodyti paskutini veiksma pati pirma
-    return hello_world(latest_result=f"{skaicius1} {zenklas} {skaicius2} = {rezultatas}")
-    return hello_world(f"{skaicius1} {zenklas} {skaicius2} = {rezultatas}")
-
+    return hello_world(latest_result=f"{rezultatas}")
 
 if __name__ == "__main__":
     app.run(debug=True)
