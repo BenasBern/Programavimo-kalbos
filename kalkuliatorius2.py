@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 
 app = Flask(__name__)
 
@@ -21,35 +21,15 @@ def dalyba(x, y):
 
 @app.route("/")  # Route 1
 def hello_world(latest_result=None):
-    history_html = "<ul>"
+    history_html = ""
     for operation in operations_history:
-        history_html += f"<li>{operation}</li>"
-    history_html += "</ul>"
+        history_html += f"{operation}"
+    history_html += ""
 
     # Rodyti paskutine operacija, jei ji egzistuoja
-    latest_result_html = f"{latest_result}" if latest_result else ""
+    latest_result = f"{latest_result}" if latest_result else ""
 
-    return f"""
-                <form action="/skaicius">
-                    <label for="test">Skaičius 1</label><br>
-                        <input type="text" id="test" name="test" value=""><br>
-                        </br></br>
-
-                    <label for="test2">Skaičius 2</label><br>
-                        <input type="text" id="test2" name="test2" value=""><br>
-                        </br></br>
-                        
-                    <label for="zenklas">Ženklas (+, -, *, /)</label><br>   
-                        <input type="text" id="zenklas" name="zenklas" value=""><br>
-                        </br></br>
-
-                    <input type="submit" value="Pateikti">
-                </form>
-                <h2>Rezultatas</h2>
-                {latest_result_html}
-                <h2>Praeitos operacijos</h2>
-                {history_html}
-            """
+    return render_template('index.html', latest_result = latest_result, history_html = operations_history)
 
 @app.route("/skaicius")  # Route 2
 def skaiciavimo():
@@ -70,7 +50,6 @@ def skaiciavimo():
         rezultatas = dalyba(skaicius1, skaicius2)
     else:
         rezultatas = "Nepalaikomas veiksmas"
-    #return hello_world(f"Atliktos operacijos rezultatas: {rezultatas}")
         
     # Isaugo operacijas i atminti, kad galetu jas pateikti
     operations_history.append(f"{skaicius1} {zenklas} {skaicius2} = {rezultatas}")

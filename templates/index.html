@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ title }}</title>
+</head>
+<body>
+<h1>Sveiki, atvykę į kalkuliatorių</h1>
+
+<form action="/skaicius">
+    <label for="test">Skaičius 1</label><br>
+        <input type="text" id="test" name="test" value=""><br>
+        </br></br>
+
+    <label for="test2">Skaičius 2</label><br>
+        <input type="text" id="test2" name="test2" value=""><br>
+        </br></br>
+        
+    <label for="zenklas">Ženklas (+, -, *, /)</label><br>   
+        <input type="text" id="zenklas" name="zenklas" value=""><br>
+        </br></br>
+
+    <input type="submit" value="Pateikti">
+</form>
+<h2>Rezultatas</h2>
+{{ latest_result }}
+<br> <br>
+<table border="1">
+    <thead>
+      <tr>
+        <th>History Events</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for event_html in history_html %}
+      <tr id="row-{{ loop.index }}">
+        <td>{{ event_html|safe }}</td>
+        <!-- Additional column for the button -->
+        <td>
+          <!-- Button triggers JavaScript function with event's ID -->
+          <button type="button" onclick="clearOperation('{{ loop.index }}')">Clear</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  
+  <script>
+  function clearOperation(eventId) {
+    // Using the Fetch API to send a DELETE request
+    fetch('/skaicius', {
+      method: 'DELETE',
+      // Optional: Include data if needed, e.g., the ID of the event to clear
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id: eventId })
+    })
+    .then(response => {
+      if (response.ok) {
+        console.log("Operation cleared successfully for event ID:", eventId);
+        // Optionally, remove the row from the table
+        document.getElementById('row-' + eventId).remove();
+      } else {
+        console.error("Failed to clear operation for event ID:", eventId);
+      }
+    })
+    .catch(error => console.error('Error:', error));
+  }
+  </script>  
+<h2></h2>
+</tr>
+</body>
+</html>
