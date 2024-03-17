@@ -44,26 +44,31 @@ def handle_operation():
 
     if not request.args.get("test") or not request.args.get("test2"):
         return "Nėra argumento"
-    skaicius1 = request.args.get("test", type=int)  # Gauti ir pakeisti i int
-    skaicius2 = request.args.get("test2", type=int)  # Gauti ir pakeisti i int
-    zenklas = request.args.get("zenklas")  # Gauti simboli
+    skaicius1 = request.args.get("test", type=int)
+    skaicius2 = request.args.get("test2", type=int)
+    zenklas = request.args.get("zenklas")
 
-    # Atlikti operacija, pagal tan tikra simboli
+    # Check if the operation is division by zero
+    if zenklas == '/' and skaicius2 == 0:
+        # Return "Negalimas veiksmas" without adding to history
+        return hello_world(latest_result="Negalimas veiksmas")
+
+    # Continue with other operations
     if zenklas == '+':
         rezultatas = sudetis(skaicius1, skaicius2)
     elif zenklas == '-':
         rezultatas = atimtis(skaicius1, skaicius2)
     elif zenklas == '*':
         rezultatas = daugyba(skaicius1, skaicius2)
-    elif zenklas == '/':
+    elif zenklas == '/':  # Safe due to the earlier check
         rezultatas = dalyba(skaicius1, skaicius2)
     else:
         rezultatas = "Nepalaikomas veiksmas"
-        
-    # Isaugo operacijas i atminti, kad galetu jas pateikti
+
+    # Add operation to history only if valid
     operations_history.append(f"{skaicius1} {zenklas} {skaicius2} = {rezultatas}")
-    
-    # Iskviesti hello_world, kad rodyti paskutini veiksma pati pirma
+
+    # Show the result
     return hello_world(latest_result=f"{rezultatas}")
 
 if __name__ == "__main__":
