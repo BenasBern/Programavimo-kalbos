@@ -29,8 +29,8 @@
 <table border="1">
     <thead>
       <tr>
-        <th>History Events</th>
-        <th>Actions</th>
+        <th>Istorija</th>
+        <th>Veiksmai</th>
       </tr>
     </thead>
     <tbody>
@@ -40,7 +40,7 @@
         <!-- Additional column for the button -->
         <td>
           <!-- Button triggers JavaScript function with event's ID -->
-          <button type="button" onclick="clearOperation('{{ loop.index }}')">Clear</button>
+          <button type="button" onclick="clearOperation('{{ loop.index }}')">Trinti</button>
         </td>
       </tr>
       {% endfor %}
@@ -48,28 +48,25 @@
   </table>
   
   <script>
-  function clearOperation(eventId) {
-    // Using the Fetch API to send a DELETE request
-    fetch('/skaicius', {
-      method: 'DELETE',
-      // Optional: Include data if needed, e.g., the ID of the event to clear
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ id: eventId })
-    })
-    .then(response => {
-      if (response.ok) {
-        console.log("Operation cleared successfully for event ID:", eventId);
-        // Optionally, remove the row from the table
-        document.getElementById('row-' + eventId).remove();
-      } else {
-        console.error("Failed to clear operation for event ID:", eventId);
-      }
-    })
-    .catch(error => console.error('Error:', error));
-  }
-  </script>  
+    function clearOperation(eventId) {
+        fetch('/skaicius', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ id: eventId })
+        })
+        .then(response => {
+          if (response.ok) {
+            console.log("Operacija sėkmingai ištrinta:", eventId);
+            document.getElementById('row-' + eventId).remove();
+          } else {
+            console.error("Nesėkmingas trynimas:", eventId);
+          }
+        })
+        .catch(error => console.error('Klaida:', error));
+    }
+    </script>
 <h2></h2>
 </tr>
 </body>

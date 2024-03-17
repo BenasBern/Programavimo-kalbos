@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, jsonify, request, render_template
 
 app = Flask(__name__)
 
@@ -33,6 +33,16 @@ def hello_world(latest_result=None):
 
 @app.route("/skaicius")  # Route 2
 def skaiciavimo():
+    if request.method == "DELETE":
+        # Process the DELETE request to clear a specific operation
+        data = request.json
+        operation_id = int(data.get('id')) - 1  # Adjusting because list indexes start at 0
+        if 0 <= operation_id < len(operations_history):
+            operations_history.pop(operation_id)
+            return jsonify({"success": True, "message": "Operation cleared."}), 200
+        else:
+            return jsonify({"success": False, "message": "Invalid operation ID."}), 400
+
     if not request.args.get("test") or not request.args.get("test2"):
         return "Nera argumento"
     skaicius1 = request.args.get("test", type=int)  # Gauti ir pakeisti i int
