@@ -6,22 +6,22 @@
 <title>{{ title }}</title>
 <style>
    .form-container {
-            display: flex; /* Align Block 1 and Block 2 side by side */
+            display: flex; /* Aligns Block 1 and Block 2 side by side */
         }
         .input-block {
             display: flex;
             flex-direction: column;
-            margin-right: 20px; /* Add spacing between the blocks */
+            margin-right: 20px; /* Space between the input blocks */
         }
         .input-block label {
             margin-bottom: 5px; /* Space below the label */
         }
-        .parallel-inputs {
+        .input-button-group {
             display: flex;
-            align-items: center; /* Align items vertically */
+            align-items: center; /* Aligns the input and button vertically */
         }
-        .parallel-inputs input, .parallel-inputs button {
-            margin-right: 5px; /* Add spacing between the input and button */
+        .input-button-group button {
+            margin-left: 5px; /* Space between the input box and the button */
         }
         table, th, td {
             text-align: center;
@@ -38,7 +38,7 @@
 
     <form action="/skaicius">
         <div class="form-container">
-            <!-- Block 1 -->
+            <!-- Block 1 (Unchanged) -->
             <div class="input-block">
                 <label for="test">Skaičius 1</label>
                 <input type="text" id="test" name="test">
@@ -47,17 +47,18 @@
                 <label for="zenklas">Ženklas (+, -, *, /)</label>
                 <input type="text" id="zenklas" name="zenklas">
             </div>
-            <!-- Block 2 and Block 3 combined -->
+            <!-- Block 2 Adjusted -->
             <div class="input-block">
-                <div class="parallel-inputs">
-                    <div>
-                        <label for="extra1">Tobulinamas veiksmas</label>
-                        <input type="text" id="extra1" name="extra1">
-                    </div>
-                    <button type="button" onclick="pasteToExtraInput1()">Įklijuoti</button> <!-- This button is parallel to "Tobulinamas veiksmas" -->
+                <label for="extra1">Tobulinamas veiksmas</label>
+                <div class="input-button-group"> <!-- This div groups the input and the button together -->
+                    <input type="text" id="extra1" name="extra1">
+                    <button type="button" onclick="pasteToExtraInput1()">Įklijuoti</button>
                 </div>
                 <label for="extra2">Veiksmo patobulinimas</label>
                 <input type="text" id="extra2" name="extra2">
+                <label for="extra3">Spausti "Tobulinti"</label>
+                <button type="button" id="tobulintiBtn">Tobulinti</button>
+                <div id="modifiedAnswerDisplay"></div> <!-- Placeholder for the modified answer -->
             </div>
         </div>
         <input type="submit" value="Pateikti" style="display: block; margin-top: 20px;">
@@ -65,6 +66,10 @@
 <h2>Rezultatas</h2>
 {{ latest_result }}
 <br> <br>
+<!-- Inside index.html -->
+{% if modified_result %}
+    <div>Modified Result: {{ modified_result }}</div>
+{% endif %}
 <table border="1">
     <thead>
         <tr>
@@ -92,6 +97,47 @@
 </table>
 
 <script>
+    document.getElementById('tobulintiBtn').addEventListener('click', function() {
+        const baseEquationInput = document.getElementById('extra1');
+        const operationInput = document.getElementById('extra2').value.trim();
+    
+        // Assuming the base equation is always a simple number for demonstration purposes.
+        let baseEquationValue = parseFloat(baseEquationInput.value);
+        
+        // Early exit if the base equation isn't a number
+        if (isNaN(baseEquationValue)) {
+            alert("Please paste a valid equation result in 'Tobulinamas veiksmas'.");
+            return;
+        }
+    
+        try {
+            // Parse the operation and value from Veiksmo tobulinimas
+            const [operation, valueStr] = [operationInput.slice(0, 1), operationInput.slice(1)];
+            const value = parseFloat(valueStr);
+    
+            if (isNaN(value)) throw new Error("Invalid operation.");
+    
+            // Apply the operation
+            switch (operation) {
+                case '+': baseEquationValue += value; break;
+                case '-': baseEquationValue -= value; break;
+                case '*': baseEquationValue *= value; break;
+                case '/': 
+                    if (value === 0) throw new Error("Cannot divide by zero.");
+                    baseEquationValue /= value; 
+                    break;
+                default: throw new Error("Unsupported operation.");
+            }
+    
+            // Update the Tobulinamas veiksmas input with the new result
+            baseEquationInput.value = baseEquationValue.toString();
+        } catch (error) {
+            alert(error.message);
+        }
+    });
+    </script>    
+
+<script>
     function pasteToExtraInput1() {
         // Use the Clipboard API to read text from the clipboard
         navigator.clipboard.readText()
@@ -107,11 +153,15 @@
     </script>
     
 <script>
-    function copyToClipboard(text) {
+    function copyToClipboard(fullEquation) {
+    // Assuming the full equation is in the format "equation = answer"
+    const answer = fullEquation.split('=')[1]?.trim(); // Extract the answer part after "="
+
+    if (answer) {
         // Create a temporary textarea element to hold the text to copy
         const tempElement = document.createElement('textarea');
-        // Set the text value to the provided text
-        tempElement.value = text;
+        // Set the text value to the extracted answer
+        tempElement.value = answer;
         // Append the textarea to the document body (required for the copy command)
         document.body.appendChild(tempElement);
         // Select the text in the textarea
@@ -121,8 +171,12 @@
         // Remove the temporary textarea from the document
         document.body.removeChild(tempElement);
         // Optionally, alert the user that the text has been copied
-        alert('Tekstas nukopijuotas: ' + text);
+        alert('Answer copied: ' + answer);
+    } else {
+        // Handle cases where the answer might not be extracted correctly
+        alert('Could not copy the answer. Please check the equation format.');
     }
+}
     </script>    
   
 <script>
