@@ -5,55 +5,125 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{ title }}</title>
 <style>
-    /* CSS to center align everything in the table */
-    table, th, td {
-        text-align: center;
-        border-collapse: collapse; /* Optional: for better border appearance */
-    }
-    table {
-        width: 15%; /* Optional: to ensure the table stretches to full container width */
-        margin-top: 20px; /* Optional: to add some spacing above the table */
-    }
-</style>
+   .form-container {
+            display: flex; /* Align Block 1 and Block 2 side by side */
+        }
+        .input-block {
+            display: flex;
+            flex-direction: column;
+            margin-right: 20px; /* Add spacing between the blocks */
+        }
+        .input-block label {
+            margin-bottom: 5px; /* Space below the label */
+        }
+        .parallel-inputs {
+            display: flex;
+            align-items: center; /* Align items vertically */
+        }
+        .parallel-inputs input, .parallel-inputs button {
+            margin-right: 5px; /* Add spacing between the input and button */
+        }
+        table, th, td {
+            text-align: center;
+            border-collapse: collapse;
+        }
+        table {
+            width: 25%;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-<h1>Sveiki, atvykę į kalkuliatorių</h1>
+    <h1>Sveiki, atvykę į kalkuliatorių</h1>
 
-<form action="/skaicius">
-    <label for="test">Skaičius 1</label><br>
-    <input type="text" id="test" name="test" value=""><br><br><br>
-
-    <label for="test2">Skaičius 2</label><br>
-    <input type="text" id="test2" name="test2" value=""><br><br><br>
-        
-    <label for="zenklas">Ženklas (+, -, *, /)</label><br>   
-    <input type="text" id="zenklas" name="zenklas" value=""><br><br><br>
-
-    <input type="submit" value="Pateikti">
-</form>
+    <form action="/skaicius">
+        <div class="form-container">
+            <!-- Block 1 -->
+            <div class="input-block">
+                <label for="test">Skaičius 1</label>
+                <input type="text" id="test" name="test">
+                <label for="test2">Skaičius 2</label>
+                <input type="text" id="test2" name="test2">
+                <label for="zenklas">Ženklas (+, -, *, /)</label>
+                <input type="text" id="zenklas" name="zenklas">
+            </div>
+            <!-- Block 2 and Block 3 combined -->
+            <div class="input-block">
+                <div class="parallel-inputs">
+                    <div>
+                        <label for="extra1">Tobulinamas veiksmas</label>
+                        <input type="text" id="extra1" name="extra1">
+                    </div>
+                    <button type="button" onclick="pasteToExtraInput1()">Įklijuoti</button> <!-- This button is parallel to "Tobulinamas veiksmas" -->
+                </div>
+                <label for="extra2">Veiksmo patobulinimas</label>
+                <input type="text" id="extra2" name="extra2">
+            </div>
+        </div>
+        <input type="submit" value="Pateikti" style="display: block; margin-top: 20px;">
+    </form>
 <h2>Rezultatas</h2>
 {{ latest_result }}
 <br> <br>
 <table border="1">
     <thead>
-      <tr>
-        <th>Nr.</th>
-        <th>Istorija</th>
-        <th>Veiksmai</th>
-      </tr>
+        <tr>
+            <th>Nr.</th>
+            <th>Istorija</th>
+            <th>Veiksmai</th>
+            <th>Kopijuoti</th> <!-- New column for copy action -->
+        </tr>
     </thead>
     <tbody>
-      {% for event_html in history_html %}
-      <tr id="row-{{ loop.index }}">
-        <td>{{ loop.index }}</td>
-        <td>{{ event_html|safe }}</td>
-        <td>
-          <button type="button" onclick="clearOperation('{{ loop.index }}')">Trinti</button>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>    
+        {% for event_html in history_html %}
+        <tr id="row-{{ loop.index }}">
+            <td>{{ loop.index }}</td>
+            <td>{{ event_html|safe }}</td>
+            <td>
+                <button type="button" onclick="clearOperation('{{ loop.index }}')">Trinti</button>
+            </td>
+            <td>
+                <!-- Copy button calls copyToClipboard function with event content -->
+                <button type="button" onclick="copyToClipboard('{{ event_html|safe }}')">Kopijuoti</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
+
+<script>
+    function pasteToExtraInput1() {
+        // Use the Clipboard API to read text from the clipboard
+        navigator.clipboard.readText()
+        .then(text => {
+            // Find the Extra Input 1 field and set its value to the clipboard text
+            document.getElementById('extra1').value = text;
+        })
+        .catch(err => {
+            console.error('Failed to read clipboard contents: ', err);
+            alert('Failed to paste text. Make sure you have permission to access the clipboard.');
+        });
+    }
+    </script>
+    
+<script>
+    function copyToClipboard(text) {
+        // Create a temporary textarea element to hold the text to copy
+        const tempElement = document.createElement('textarea');
+        // Set the text value to the provided text
+        tempElement.value = text;
+        // Append the textarea to the document body (required for the copy command)
+        document.body.appendChild(tempElement);
+        // Select the text in the textarea
+        tempElement.select();
+        // Execute the copy command
+        document.execCommand('copy');
+        // Remove the temporary textarea from the document
+        document.body.removeChild(tempElement);
+        // Optionally, alert the user that the text has been copied
+        alert('Tekstas nukopijuotas: ' + text);
+    }
+    </script>    
   
 <script>
   function clearOperation(eventId) {

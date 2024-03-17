@@ -63,7 +63,7 @@ def handle_operation():
     elif zenklas == '/':  # Safe due to the earlier check
         rezultatas = dalyba(skaicius1, skaicius2)
     else:
-        rezultatas = "Nepalaikomas veiksmas"
+        rezultatas = "Negalimas veiksmas"
 
     # Add operation to history only if valid
     operations_history.append(f"{skaicius1} {zenklas} {skaicius2} = {rezultatas}")
