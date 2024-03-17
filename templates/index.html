@@ -4,22 +4,30 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{ title }}</title>
+<style>
+    /* CSS to center align everything in the table */
+    table, th, td {
+        text-align: center;
+        border-collapse: collapse; /* Optional: for better border appearance */
+    }
+    table {
+        width: 15%; /* Optional: to ensure the table stretches to full container width */
+        margin-top: 20px; /* Optional: to add some spacing above the table */
+    }
+</style>
 </head>
 <body>
 <h1>Sveiki, atvykę į kalkuliatorių</h1>
 
 <form action="/skaicius">
     <label for="test">Skaičius 1</label><br>
-        <input type="text" id="test" name="test" value=""><br>
-        </br></br>
+    <input type="text" id="test" name="test" value=""><br><br><br>
 
     <label for="test2">Skaičius 2</label><br>
-        <input type="text" id="test2" name="test2" value=""><br>
-        </br></br>
+    <input type="text" id="test2" name="test2" value=""><br><br><br>
         
     <label for="zenklas">Ženklas (+, -, *, /)</label><br>   
-        <input type="text" id="zenklas" name="zenklas" value=""><br>
-        </br></br>
+    <input type="text" id="zenklas" name="zenklas" value=""><br><br><br>
 
     <input type="submit" value="Pateikti">
 </form>
@@ -29,6 +37,7 @@
 <table border="1">
     <thead>
       <tr>
+        <th>Nr.</th>
         <th>Istorija</th>
         <th>Veiksmai</th>
       </tr>
@@ -36,38 +45,63 @@
     <tbody>
       {% for event_html in history_html %}
       <tr id="row-{{ loop.index }}">
+        <td>{{ loop.index }}</td>
         <td>{{ event_html|safe }}</td>
-        <!-- Additional column for the button -->
         <td>
-          <!-- Button triggers JavaScript function with event's ID -->
           <button type="button" onclick="clearOperation('{{ loop.index }}')">Trinti</button>
         </td>
       </tr>
       {% endfor %}
-    </tbody>
-  </table>
+    </tbody>    
+</table>
   
-  <script>
-    function clearOperation(eventId) {
-        fetch('/skaicius', {
+<script>
+  function clearOperation(eventId) {
+      fetch('/skaicius', {
           method: 'DELETE',
           headers: {
-            'Content-Type': 'application/json',
+              'Content-Type': 'application/json',
           },
           body: JSON.stringify({ id: eventId })
-        })
-        .then(response => {
-          if (response.ok) {
-            console.log("Operacija sėkmingai ištrinta:", eventId);
-            document.getElementById('row-' + eventId).remove();
+      })
+      .then(response => response.json())
+      .then(data => {
+          if (data.success) {
+              console.log("Operation successfully deleted:", eventId);
+              // Remove the row from the DOM
+              let rowElement = document.getElementById('row-' + eventId);
+              if (rowElement) {
+                  rowElement.remove();
+                  // After removal, update the numbers for all remaining rows
+                  updateRowNumbers();
+              } else {
+                  console.error("Could not find the row to remove for event ID:", eventId);
+              }
           } else {
-            console.error("Nesėkmingas trynimas:", eventId);
+              console.error("Failed to delete operation:", eventId, data.message);
           }
-        })
-        .catch(error => console.error('Klaida:', error));
-    }
-    </script>
-<h2></h2>
-</tr>
+      })
+      .catch(error => console.error('Error:', error));
+  }
+  
+  // New function to update the row numbers
+  function updateRowNumbers() {
+      let rows = document.querySelectorAll('tbody tr');
+      rows.forEach((row, index) => {
+          // Update the row's ID
+          row.setAttribute('id', 'row-' + (index + 1));
+          // Find the first cell (the number column) and update its text
+          let firstCell = row.cells[0];
+          if (firstCell) {
+              firstCell.textContent = index + 1;
+          }
+          // Update the onclick attribute for the button to reflect the new row index
+          let button = row.querySelector('button');
+          if (button) {
+              button.setAttribute('onclick', 'clearOperation(' + (index + 1) + ')');
+          }
+      });
+  }
+  </script>  
 </body>
 </html>

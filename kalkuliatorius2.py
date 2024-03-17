@@ -15,7 +15,7 @@ def daugyba(x, y):
 
 def dalyba(x, y):
     if (y==0):
-        return
+        return "Negalimas veiksmas"
     else:
         return x / y
 
@@ -31,20 +31,19 @@ def hello_world(latest_result=None):
 
     return render_template('index.html', latest_result = latest_result, history_html = operations_history)
 
-@app.route("/skaicius")  # Route 2
-def skaiciavimo():
+@app.route("/skaicius", methods=["GET", "POST", "DELETE"])
+def handle_operation():
     if request.method == "DELETE":
-        # Process the DELETE request to clear a specific operation
-        data = request.json
-        operation_id = int(data.get('id')) - 1  # Adjusting because list indexes start at 0
+        data = request.get_json()
+        operation_id = int(data.get('id', 0)) - 1  # Adjusting for 0-based indexing
         if 0 <= operation_id < len(operations_history):
-            operations_history.pop(operation_id)
-            return jsonify({"success": True, "message": "Operation cleared."}), 200
+            del operations_history[operation_id]
+            return jsonify({"success": True}), 200
         else:
             return jsonify({"success": False, "message": "Invalid operation ID."}), 400
 
     if not request.args.get("test") or not request.args.get("test2"):
-        return "Nera argumento"
+        return "Nėra argumento"
     skaicius1 = request.args.get("test", type=int)  # Gauti ir pakeisti i int
     skaicius2 = request.args.get("test2", type=int)  # Gauti ir pakeisti i int
     zenklas = request.args.get("zenklas")  # Gauti simboli
