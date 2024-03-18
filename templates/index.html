@@ -62,11 +62,7 @@
                 <label for="extra3">Spausti "Tobulinti"</label>
                 <button type="button" id="tobulintiBtn">Tobulinti</button>
                 <label for="atsakymas" style="display: block; margin-top: 12px;">Atsakymas</label>
-                <span id="modified_answer"><!-- This element will display the modified answer --></span>
-                <!-- Inside index.html -->
-                {% if modified_result %}
-                <div>Modified Result: {{ modified_result }}</div>
-                {% endif %}
+                <span id="atsakymas"><!-- This element will display the modified answer --></span>
             </div>
         </div>
     </form>
@@ -133,7 +129,7 @@
             }
     
             // Update the Tobulinamas veiksmas input with the new result
-            baseEquationInput.value = baseEquationValue.toString();
+            //baseEquationInput.value = baseEquationValue.toString();
         } catch (error) {
             alert(error.message);
         }
