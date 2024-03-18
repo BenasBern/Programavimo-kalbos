@@ -71,5 +71,31 @@ def handle_operation():
     # Show the result
     return hello_world(latest_result=f"{rezultatas}")
 
+@app.route('/modify_answer', methods=['POST'])
+def modify_answer():
+    data = request.json
+    original_answer = float(data.get('original_answer', 0))
+    modification = data.get('modification', '')
+    
+    # Assuming a simple operation format like "+10"
+    try:
+        operation, value = modification[0], float(modification[1:])
+        if operation == '+':
+            modified_answer = original_answer + value
+        elif operation == '-':
+            modified_answer = original_answer - value
+        elif operation == '*':
+            modified_answer = original_answer * value
+        elif operation == '/':
+            if value == 0:
+                return jsonify({'error': 'Division by zero'}), 400
+            modified_answer = original_answer / value
+        else:
+            return jsonify({'error': 'Invalid operation'}), 400
+
+        return jsonify(modified_answer=modified_answer)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
 if __name__ == "__main__":
     app.run(debug=True)
