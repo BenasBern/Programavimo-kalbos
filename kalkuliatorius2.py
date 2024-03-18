@@ -42,11 +42,20 @@ def handle_operation():
         else:
             return jsonify({"success": False, "message": "Invalid operation ID."}), 400
 
-    if not request.args.get("test") or not request.args.get("test2"):
+    # Handling for POST request
+    if request.method == "POST":
+        data = request.form  # Accessing form data for POST requests
+        skaicius1 = data.get("test", type=int)
+        skaicius2 = data.get("test2", type=int)
+    else:
+        # Fallback for GET request, keeping the original mechanism
+        skaicius1 = request.args.get("test", type=int)
+        skaicius2 = request.args.get("test2", type=int)
+    
+    zenklas = request.values.get("zenklas")  # This works for both GET and POST
+
+    if skaicius1 is None or skaicius2 is None or zenklas is None:
         return "Nėra argumento"
-    skaicius1 = request.args.get("test", type=int)
-    skaicius2 = request.args.get("test2", type=int)
-    zenklas = request.args.get("zenklas")
 
     # Check if the operation is division by zero
     if zenklas == '/' and skaicius2 == 0:
@@ -60,7 +69,7 @@ def handle_operation():
         rezultatas = atimtis(skaicius1, skaicius2)
     elif zenklas == '*':
         rezultatas = daugyba(skaicius1, skaicius2)
-    elif zenklas == '/':  # Safe due to the earlier check
+    elif zenklas == '/':
         rezultatas = dalyba(skaicius1, skaicius2)
     else:
         rezultatas = "Negalimas veiksmas"

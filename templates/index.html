@@ -113,7 +113,7 @@
                 <input type="text" id="zenklas" name="zenklas">
                 <input type="reset" value="Nustatyti iš naujo" style="display: block; margin-top: 10px;">
                 <input type="submit" value="Apskaičiuoti" style="display: block; margin-top: 10px; margin-bottom: 15px;">
-                <label for="latest_result"><b>Rezultatas</b><span id="latest_result" style="margin-left: 5px;"> </span></label>
+                <label for="latest_result"><b>Rezultatas</b><span id="latest_result" style="margin-left: 5px;">{{ latest_result }}</span></label>
             </div>
             <!-- Block 2 Adjusted -->
             <div class="input-block">
@@ -137,7 +137,7 @@
             <th>Nr.</th>
             <th>Veiksmai</th>
             <th>Trynimas</th>
-            <th>Kopijuoti</th> <!-- New column for copy action -->
+            <th>Kopijuoti</th>
         </tr>
     </thead>
     <tbody>
