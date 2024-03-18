@@ -3,133 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }}</title>
+    <title>Skaičiuotuvas</title>
+    <link rel="stylesheet" href="style.css"> <!-- Link to the CSS file -->
+</head>
     <style>
-        * {
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4;
-            padding: 20px;
-            margin: 0;
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-        }
-        .form-container {
-            max-width: 600px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .input-block {
-            margin-bottom: 15px;
-        }
-        .input-block label {
-            display: block;
-            font-weight: bold;
-            color: #444;
-            margin-bottom: 5px;
-        }
-        .input-block input[type="text"]
-        {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            background-color: #fff; /* White background for input */
-            color: #333; /* Dark text for visibility */
-        }
-        .input-block input[type="reset"],
-        .input-block input[type="submit"],
-        .input-block button {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            background-color: #5cb85c; /* Green background */
-            color: white; /* White text */
-            border: none; /* Remove border */
-            cursor: pointer; /* Pointer cursor on hover */
-        }
-        .input-block input[type="reset"]:hover,
-        .input-block input[type="submit"]:hover,
-        .input-block button:hover {
-            background-color: #4cae4c; /* Darker green on hover */
-        }
-        #modifiedAnswerDisplay {
-            font-weight: bold;
-            margin-top: 5px;
-        }
-        table {
-            width: 100%;
-            margin-top: 20px;
-            border-collapse: collapse;
-            text-align: center; /* Center align table content */
-        }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th {
-            background-color: #f9f9f9;
-            padding: 10px;
-        }
-        td {
-            padding: 8px;
-        }
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        button {
-            background-color: #000000;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-        button:hover {
-            opacity: 0.8;
-        }
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #424242;
+        margin: 0;
+    }
+
+    .calculator {
+        background-color: #aeb2b7;
+        padding: 20px;
+        border-radius: 20px;
+        width: 220px; /* Adjust the width as needed */
+    }
+
+    .display {
+        background-color: #000;
+        color: #fff;
+        padding: 20px;
+        font-size: 2em;
+        border-radius: 10px;
+        text-align: right;
+        margin-bottom: 20px;
+    }
+
+    .button-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    .button {
+        width: 50px; /* Adjust button size as needed */
+        height: 50px; /* Adjust button size as needed */
+        border-radius: 25px; /* Circular buttons */
+        font-size: 20px;
+        color: white;
+        border: none;
+        cursor: pointer;
+        background-color: #333; /* Dark button color */
+    }
+
+    .button.orange {
+        background-color: #ff9f0a; /* Orange color for operation buttons */
+    }
+
+    .modification-section input[type="text"] {
+        background-color: #333; /* Black background */
+        color: #fff; /* White text */
+        border: none;
+        padding: 10px;
+        margin: 5px 0; /* Adjust spacing as needed */
+        border-radius: 24px; /* Rounded corners */
+        width: 100%; /* Adjust width as needed */
+        box-sizing: border-box;
+        text-align: center;
+    }
+
+    .modification-section button {
+        background-color: #ff9f0a; /* Orange color, similar to other operation buttons */
+        color: white;
+        border: none;
+        padding: 10px;
+        margin: 5px 0; /* Adjust spacing as needed */
+        width: 100%; /* Adjust width as needed */
+        border-radius: 24px; /* Rounded corners */
+        cursor: pointer;
+        text-align: center;
+    }
+
+    .modification-section {
+        background-color: #97999d; /* Black background for the section */
+        padding: 20px;
+        border-radius: 24px; /* Rounded corners for the section */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: add some shadow for depth */
+        margin-top: 20px;
+    }
+
+    #modifiedResult {
+        color: #000000; /* Sets the text color to white */
+        font-weight: normal; /* Normal weight for the number by default */
+        margin-top: 10px; /* Add some space above the result display */
+    }
+
+    #modifiedResult b {
+        font-weight: bold; /* Makes text inside <b> tags bold */
+    }
     </style>
 </head>
 <body>
-    <h1>Sveiki, atvykę į kalkuliatorių</h1>
+    <div class="calculator">
+        <div class="display" id="latest_result">0</div>
 
-    <form action="/skaicius" method="post">
-        <div class="form-container">
-            <!-- Block 1 (Unchanged) -->
-            <div class="input-block">
-                <label for="test">Skaičius 1</label>
-                <input type="text" id="test" name="test">
-                <label for="test2">Skaičius 2</label>
-                <input type="text" id="test2" name="test2">
-                <label for="zenklas">Ženklas (+, -, *, /)</label>
-                <input type="text" id="zenklas" name="zenklas">
-                <input type="reset" value="Nustatyti iš naujo" style="display: block; margin-top: 10px;">
-                <input type="submit" value="Apskaičiuoti" style="display: block; margin-top: 10px; margin-bottom: 15px;">
-                <label for="latest_result"><b>Rezultatas</b><span id="latest_result" style="margin-left: 5px;">{{ latest_result }}</span></label>
-            </div>
-            <!-- Block 2 Adjusted -->
-            <div class="input-block">
-                <label for="extra1">Tobulinamas veiksmas</label>
-                <div class="input-button-group"> <!-- This div groups the input and the button together -->
-                    <input type="text" id="extra1" name="extra1">
-                    <button type="button" onclick="pasteToExtraInput1()">Įklijuoti</button>
-                </div>
-                <label for="extra2">Veiksmo patobulinimas</label>
-                <input type="text" id="extra2" name="extra2">
-                <label for="extra3">Spausti "Tobulinti"</label>
-                <button type="button" id="tobulintiBtn">Tobulinti</button>
-                <label for="atsakymas" style="display: block; margin-top: 12px;"> <b>Patobulintas rezultatas</b> <span id="atsakymas" style="margin-left: 5px;"> </span> </label>
-            </div>
+        <!-- Numbers and operations grid -->
+        <div class="button-row">
+            <button class="button" data-value="1">1</button>
+            <button class="button" data-value="2">2</button>
+            <button class="button" data-value="3">3</button>
+            <button class="button orange" data-value="+">+</button>
         </div>
-    </form>
+        <div class="button-row">
+            <button class="button" data-value="4">4</button>
+            <button class="button" data-value="5">5</button>
+            <button class="button" data-value="6">6</button>
+            <button class="button orange" data-value="-">-</button>
+        </div>
+        <div class="button-row">
+            <button class="button" data-value="7">7</button>
+            <button class="button" data-value="8">8</button>
+            <button class="button" data-value="9">9</button>
+            <button class="button orange" data-value="*">x</button>
+        </div>
+        <div class="button-row">
+            <button class="button" data-value="0">0</button>
+            <button class="button" data-value="0">C</button>
+            <button class="button" data-value="=">=</button>
+            <button class="button orange" data-value="/">÷</button>
+        </div>
+
+        <!-- Modification section still below -->
+        <div class="modification-section">
+            <input type="text" id="extra1" placeholder="Tobulinamas rezultatas">
+            <button type="button" id="pasteBtn">Įklijuoti</button>
+            <input type="text" id="extra2" placeholder="Tobulinimas (pvz., +10)">
+            <button type="button" id="modifyBtn">Patobulinti</button>
+            <div id="modifiedResult" style = "margin-top: 10px;"><b>Atsakymas: </b></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script> <!-- Link to the JavaScript file -->
+</body>
 <br> <br>
 <table border="1">
     <thead>
@@ -158,73 +167,124 @@
 </table>
 
 <script>
-    document.getElementById('tobulintiBtn').addEventListener('click', function() {
-        const baseEquationInput = document.getElementById('extra1');
-        const operationInput = document.getElementById('extra2').value.trim();
-    
-        // Assuming the base equation is always a simple number for demonstration purposes.
-        let baseEquationValue = parseFloat(baseEquationInput.value);
-        
-        // Early exit if the base equation isn't a number
-        if (isNaN(baseEquationValue)) {
-            alert("Please paste a valid equation result in 'Tobulinamas veiksmas'.");
-            return;
-        }
-    
-        try {
-            // Parse the operation and value from Veiksmo tobulinimas
-            const [operation, valueStr] = [operationInput.slice(0, 1), operationInput.slice(1)];
-            const value = parseFloat(valueStr);
-    
-            if (isNaN(value)) throw new Error("Invalid operation.");
-    
-            // Apply the operation
-            switch (operation) {
-                case '+': baseEquationValue += value; break;
-                case '-': baseEquationValue -= value; break;
-                case '*': baseEquationValue *= value; break;
-                case '/': 
-                    if (value === 0) throw new Error("Cannot divide by zero.");
-                    baseEquationValue /= value; 
-                    break;
-                default: throw new Error("Unsupported operation.");
+  document.addEventListener('DOMContentLoaded', function() {
+    let equation = ''; // To store the user's input
+    const display = document.getElementById('latest_result'); // The display element
+    let freshStart = true; // Indicates if the next input starts a new equation
+
+    document.querySelectorAll('.button').forEach(button => {
+        button.addEventListener('click', function() {
+            const value = this.getAttribute('data-value');
+
+            // Handle equals (=) button
+            if (value === '=') {
+                if (!equation || equation.endsWith('+') || equation.endsWith('-') || equation.endsWith('*') || equation.endsWith('/')) {
+                    // Invalid equation or ends with an operator, do nothing
+                    return;
+                }
+                if (equation.includes('/0')) {
+                    // Division by zero error
+                    display.textContent = 'Klaida';
+                    equation = '';
+                    freshStart = true;
+                    return;
+                }
+                // Fetch result from server
+                fetch('/evaluate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ equation: equation })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    display.textContent = data.result;
+                    equation = data.result.toString();
+                    freshStart = true; // Next input starts a new equation
+                })
+                .catch(error => console.error('Error:', error));
             }
-    
-            // Update the Tobulinamas veiksmas input with the new result
-            //baseEquationInput.value = baseEquationValue.toString();
-        } catch (error) {
-            alert(error.message);
-        }
+            // Handle clear (C) button
+            else if (value === 'C') {
+                equation = '';
+                display.textContent = '0';
+                freshStart = true;
+            }
+            // Handle numeric and operator buttons
+            else {
+                if (freshStart || display.textContent === '0') {
+                    equation = value; // Start new equation or replace '0'
+                    freshStart = false;
+                } else {
+                    equation += value; // Append to existing equation
+                }
+                display.textContent = equation;
+            }
+        });
     });
+});
     </script>    
 
 <script>
-    document.getElementById('tobulintiBtn').addEventListener('click', function() {
-        const originalAnswer = document.getElementById('extra1').value; // Assuming this is where the original answer is input
-        const modification = document.getElementById('extra2').value; // The modification operation, e.g., "+10"
-        
-        fetch('/modify_answer', {
+   document.getElementById('pasteBtn').addEventListener('click', async function() {
+    // Check if the Clipboard API is available and permissions are granted
+    if (navigator.clipboard && navigator.permissions) {
+        try {
+            const permissionStatus = await navigator.permissions.query({ name: "clipboard-read" });
+            if (permissionStatus.state === "granted" || permissionStatus.state === "prompt") {
+                navigator.clipboard.readText()
+                .then(text => {
+                    document.getElementById('extra1').value = text; // Paste the text
+                })
+                .catch(err => {
+                    console.error('Error in accessing clipboard', err);
+                    alert('Error in accessing clipboard');
+                });
+            } else {
+                alert('Clipboard access not granted');
+            }
+        } catch (err) {
+            console.error('Clipboard access denied', err);
+            fallbackCopyMethod(); // Implement a fallback method if needed
+        }
+    } else {
+        // Fallback for browsers that do not fully support the clipboard API
+        fallbackCopyMethod(); // Implement a fallback method if needed
+    }
+});
+// Example of a fallback method. Adjust according to your needs.
+function fallbackCopyMethod() {
+    alert('Clipboard feature not supported or denied. Please paste manually.');
+}
+    </script>    
+
+<script>
+  document.getElementById('modifyBtn').addEventListener('click', function() {
+    const originalAnswer = document.getElementById('extra1').value;
+    const modification = document.getElementById('extra2').value;
+
+    fetch('/modify_answer', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            original_answer: document.getElementById('extra1').value, // The original answer
-            modification: document.getElementById('extra2').value // The modification, e.g., "*2"
+            original_answer: originalAnswer,
+            modification: modification
         })
     })
     .then(response => response.json())
     .then(data => {
-        // Check if the server returned an error
         if (data.error) {
             alert('Error: ' + data.error);
         } else {
-            // Update the atsakymas span with the modified answer
-            document.getElementById('atsakymas').textContent = data.modified_answer;
+            // Update the modifiedResult div to include "Atsakymas" in bold
+            document.getElementById('modifiedResult').innerHTML = "<b>Atsakymas:</b> " + data.modified_answer;
         }
     })
     .catch(error => console.error('Failed to modify the answer:', error));
-    });
+});
     </script>    
 
 <script>
