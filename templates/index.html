@@ -1,43 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{ title }}</title>
-<style>
-   .form-container {
-            display: flex; /* Aligns Block 1 and Block 2 side by side */
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+            margin: 0;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .input-block {
-            display: flex;
-            flex-direction: column;
-            margin-right: 20px; /* Space between the input blocks */
+            margin-bottom: 15px;
         }
         .input-block label {
-            margin-bottom: 5px; /* Space below the label */
+            display: block;
+            font-weight: bold;
+            color: #444;
+            margin-bottom: 5px;
+        }
+        .input-block input[type="text"]
+        {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff; /* White background for input */
+            color: #333; /* Dark text for visibility */
+        }
+        .input-block input[type="reset"],
+        .input-block input[type="submit"],
+        .input-block button {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #5cb85c; /* Green background */
+            color: white; /* White text */
+            border: none; /* Remove border */
+            cursor: pointer; /* Pointer cursor on hover */
+        }
+        .input-block input[type="reset"]:hover,
+        .input-block input[type="submit"]:hover,
+        .input-block button:hover {
+            background-color: #4cae4c; /* Darker green on hover */
+        }
+        #modifiedAnswerDisplay {
+            font-weight: bold;
             margin-top: 5px;
         }
-        .input-button-group {
-            display: flex;
-            align-items: center; /* Aligns the input and button vertically */
-        }
-        .input-button-group button {
-            margin-left: 5px; /* Space between the input box and the button */
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            text-align: center; /* Center align table content */
         }
         table, th, td {
-            text-align: center;
-            border-collapse: collapse;
+            border: 1px solid #ddd;
         }
-        table {
-            width: 25%;
-            margin-top: 20px;
+        th {
+            background-color: #f9f9f9;
+            padding: 10px;
+        }
+        td {
+            padding: 8px;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        button {
+            background-color: #000000;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        button:hover {
+            opacity: 0.8;
         }
     </style>
 </head>
 <body>
     <h1>Sveiki, atvykę į kalkuliatorių</h1>
 
-    <form action="/skaicius">
+    <form action="/skaicius" method="post">
         <div class="form-container">
             <!-- Block 1 (Unchanged) -->
             <div class="input-block">
@@ -48,7 +112,8 @@
                 <label for="zenklas">Ženklas (+, -, *, /)</label>
                 <input type="text" id="zenklas" name="zenklas">
                 <input type="reset" value="Nustatyti iš naujo" style="display: block; margin-top: 10px;">
-                <input type="submit" value="Apskaičiuoti" style="display: block; margin-top: 10px;">
+                <input type="submit" value="Apskaičiuoti" style="display: block; margin-top: 10px; margin-bottom: 15px;">
+                <label for="latest_result"><b>Rezultatas</b><span id="latest_result" style="margin-left: 5px;"> </span></label>
             </div>
             <!-- Block 2 Adjusted -->
             <div class="input-block">
@@ -61,19 +126,17 @@
                 <input type="text" id="extra2" name="extra2">
                 <label for="extra3">Spausti "Tobulinti"</label>
                 <button type="button" id="tobulintiBtn">Tobulinti</button>
-                <label for="atsakymas" style="display: block; margin-top: 12px;"> <b>Atsakymas</b> <span id="atsakymas" style="margin-left: 5px;"> </span> </label>
+                <label for="atsakymas" style="display: block; margin-top: 12px;"> <b>Patobulintas rezultatas</b> <span id="atsakymas" style="margin-left: 5px;"> </span> </label>
             </div>
         </div>
     </form>
-<h2>Rezultatas</h2>
-{{ latest_result }}
 <br> <br>
 <table border="1">
     <thead>
         <tr>
             <th>Nr.</th>
-            <th>Istorija</th>
             <th>Veiksmai</th>
+            <th>Trynimas</th>
             <th>Kopijuoti</th> <!-- New column for copy action -->
         </tr>
     </thead>

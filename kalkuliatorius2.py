@@ -9,7 +9,7 @@ def sudetis(x, y):
 
 def atimtis(x, y):
     return x - y
-
+    
 def daugyba(x, y):
     return x * y
 
