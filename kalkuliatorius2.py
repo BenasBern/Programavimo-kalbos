@@ -1,6 +1,4 @@
 from flask import Flask, jsonify, request, render_template
-import ast
-import operator
 
 app = Flask(__name__)
 
@@ -99,24 +97,12 @@ def modify_answer():
             modified_answer = original_answer * value
         elif operation == '/':
             if value == 0:
-                return jsonify({'Klaida: dalyba iš 0'}), 400
+                return jsonify({'error': 'Division by zero'}), 400
             modified_answer = original_answer / value
         else:
-            return jsonify({'Klaida: netinkamas ženklas'}), 400
+            return jsonify({'error': 'Invalid operation'}), 400
 
         return jsonify(modified_answer=modified_answer)
-    except Exception as e:
-        return jsonify({'error': str(e)}), 400
-    
-@app.route('/evaluate', methods=['POST'])
-def evaluate():
-    data = request.get_json()
-    equation = data.get('equation', '')
-    try:
-        # Safer evaluation setup
-        # This is a placeholder for a proper, secure evaluation method
-        result = eval(equation, {"__builtins__": None}, {"ast": ast, "operator": operator})
-        return jsonify({'result': result})
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
